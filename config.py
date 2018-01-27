@@ -1,9 +1,11 @@
 # —*- coding: utf-8 -*-
 
 class Config(object):
-    def __init__(self):
-        self.word_embedding_dimension = 100
-        self.epoch = 2
-        self.sentence_max_size = 20
-        self.label_num = 6
-
+    def __init__(self, word_embedding_dimension=100, epoch=2, sentence_max_size=5,
+                 label_num=2, learning_rate=0.01, batch_size=3):
+        self.word_embedding_dimension = word_embedding_dimension     # 词向量的维度
+        self.epoch = epoch                                           # 遍历样本次数
+        self.sentence_max_size = sentence_max_size                   # 句子长度
+        self.label_num = label_num                                   # 分类标签个数
+        self.lr = learning_rate
+        self.batch_size = batch_size

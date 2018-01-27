@@ -2,17 +2,19 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.autograd as autograd
 from config import Config
 
 
 class TextCNN(nn.Module):
+
     def __init__(self, config):
         super(TextCNN, self).__init__()
+        self.config = config
         self.conv3 = nn.Conv2d(1, 1, (3, config.word_embedding_dimension))
         self.conv4 = nn.Conv2d(1, 1, (4, config.word_embedding_dimension))
         self.conv5 = nn.Conv2d(1, 1, (5, config.word_embedding_dimension))
         self.linear1 = nn.Linear(3, config.label_num)
+        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         map1 = F.relu(self.conv3(x))
@@ -20,14 +22,21 @@ class TextCNN(nn.Module):
         map3 = F.relu(self.conv5(x))
 
         # pooling
-        max1 = F.max_pool2d(map1, (config.sentence_max_size-3+1, 1))
-        max2 = F.max_pool2d(map2, (config.sentence_max_size-4+1, 1))
-        max3 = F.max_pool2d(map3, (config.sentence_max_size-5+1, 1))
+        max1 = F.max_pool2d(map1, (self.config.sentence_max_size-3+1, 1))
+        max2 = F.max_pool2d(map2, (self.config.sentence_max_size-4+1, 1))
+        max3 = F.max_pool2d(map3, (self.config.sentence_max_size-5+1, 1))
 
-        max_over_time = torch.cat((max1, max2, max3), 2).squeeze(0)
+        max_over_time = torch.cat((max1, max2, max3), -1)
+        max_over_time = max_over_time.view(self.config.batch_size, 1, -1)
 
-        points = self.linear1(max_over_time)
-        out = F.softmax(points)
+        #print('max', max_over_time)
+
+        out = F.sigmoid(self.linear1(max_over_time))
+
+        out = out.view(-1, self.config.label_num)
+#        print(out)
+#        out = self.softmax(out)
+#        print('\nout\n', out)
 
         return out
 

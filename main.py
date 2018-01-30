@@ -5,7 +5,7 @@ import torch.autograd as autograd
 import torch.nn as nn
 import torch.optim as optim
 from config import Config
-from model import TextCNN
+from models import TextCNN
 
 config = Config()
 
@@ -14,6 +14,12 @@ model = TextCNN(config)
 
 # 设置损失函数
 criterion = nn.CrossEntropyLoss()
+"""
+# 多分类损失函数，使用软交叉熵
+criterion = nn.
+"""
+
+criterion = nn.MultiLabelSoftMarginLoss()
 
 # 设置优化器
 optimizer = optim.SGD(model.parameters(), lr=config.lr)

@@ -1,5 +1,6 @@
 # —*- coding: utf-8 -*-
 
+
 class Config(object):
     def __init__(self, word_embedding_dimension=100, epoch=2, sentence_max_size=5,
                  label_num=2, learning_rate=0.01, batch_size=3):

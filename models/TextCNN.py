@@ -10,6 +10,7 @@ class TextCNN(nn.Module):
     def __init__(self, config):
         super(TextCNN, self).__init__()
         self.config = config
+        self.embedding = nn.Embedding(config.word_num, config.word_embedding_dimension)
         self.conv3 = nn.Conv2d(1, 1, (3, config.word_embedding_dimension))
         self.conv4 = nn.Conv2d(1, 1, (4, config.word_embedding_dimension))
         self.conv5 = nn.Conv2d(1, 1, (5, config.word_embedding_dimension))

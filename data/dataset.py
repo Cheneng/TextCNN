@@ -1,43 +1,42 @@
 from torch.utils import data
-import random
-import os
+import numpy as np
+import pickle
 
-"""
-class ReviewPolor(data.Dataset):
 
-    def __init__(self, pos_root, neg_root, train=True):
-        
-        #获取数据所在路径，并划分 "训练集" 和 "测试集"。
-        
-        self.review = [os.path.join(pos_root, file_name) for file_name in os.listdir(pos_root)]
-        neg_passage = [os.path.join(neg_root, file_name) for file_name in os.listdir(neg_root)][:800]
+class Review(data.Dataset):
 
-        # 训练集则选取前80%，测试选后20%
+    def __init__(self, train=True):
+
+        training_file = '/Users/cc/Model/SentenceClassification/data/review/processed_data/train_split_list.pkl'
+        labels_file = '/Users/cc/Model/SentenceClassification/data/review/processed_data/labels_array.pkl'
+
+        self.train_set = []
+        self.labels = np.array([])
+
+        with open(training_file, 'rb') as f:
+            self.train_set = pickle.load(f)
+
+        with open(labels_file, 'rb') as f:
+            self.labels = pickle.load(f)
+
+        # 训练集则选取前80%，交叉验证选后20%
         if train is True:
-            self.review = self.review[:int(0.8*len(self.review))]
-            neg_passage = neg_passage[:int(0.8*len(self.review))]
-        else:
-            self.review = self.review[int(0.8*len(self.review)):]
-            neg_passage = neg_passage[int(0.8*len(self.review)):]
+            self.train_set = self.train_set[:int(0.8*len(self.train_set))]
+            self.labels = self.labels[:int(0.8*len(self.labels))]
 
-        # 合并且打乱序列
-        self.review.extend(neg_passage)
-        random.shuffle(self.review)
+        else:
+            self.train_set = self.train_set[int(0.8*len(self.train_set)):]
+            self.labels = self.labels[int(0.8*len(self.labels)):]
 
     def __getitem__(self, index):
-        x = open(self.review[index], 'r')
-        label = 1 if 'pos' in self.review[index].split('/') else 0
-        out = x.readlines()
-        return out, label
+        return self.train_set[index], self.labels[index]
 
     def __len__(self):
-        return len(self.review)
-
-def prepare_data(passage, word2id):
-    pass
-"""
+        return len(self.train_set)
 
 
 if __name__ == '__main__':
-    data_dir = '/Users/cc/Model/SentenceClassification/data/review_polarity/txt_sentoken/'
+    x = Review()
+    print(len(x))
+    print(x.labels.shape)
 

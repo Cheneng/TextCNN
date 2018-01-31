@@ -1,1 +1,1 @@
-from .dataset import ReviewPolor, prepare_data
+from .dataset import Review

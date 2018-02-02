@@ -11,7 +11,6 @@ class TextCNN(nn.Module):
     def __init__(self, config):
         super(TextCNN, self).__init__()
         self.config = config
-        #self.embedding = nn.Embedding(config.word_num, config.word_embedding_dimension)
         self.conv3 = nn.Conv2d(1, 1, (3, config.word_embedding_dimension))
         self.conv4 = nn.Conv2d(1, 1, (4, config.word_embedding_dimension))
         self.conv5 = nn.Conv2d(1, 1, (5, config.word_embedding_dimension))
@@ -21,6 +20,7 @@ class TextCNN(nn.Module):
         self.linear1 = nn.Linear(3, config.label_num)
 
     def forward(self, x):
+        batch = x.shape[0]
         # Convolution
         x1 = F.relu(self.conv3(x))
         x2 = F.relu(self.conv4(x))
@@ -33,7 +33,7 @@ class TextCNN(nn.Module):
 
         # capture and concatenate the features
         x = torch.cat((x1, x2, x3), -1)
-        x = x.view(self.config.batch_size, 1, -1)
+        x = x.view(batch, 1, -1)
 
         # project the features to the labels
         x = self.linear1(x)

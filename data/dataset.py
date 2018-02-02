@@ -1,4 +1,5 @@
 from torch.utils import data
+import torch
 import numpy as np
 import pickle
 
@@ -7,7 +8,7 @@ class Review(data.Dataset):
 
     def __init__(self, train=True):
 
-        training_file = '/Users/cc/Model/SentenceClassification/data/review/processed_data/train_split_list.pkl'
+        training_file = '/Users/cc/Model/SentenceClassification/data/review/processed_data/train_index_list.pkl'
         labels_file = '/Users/cc/Model/SentenceClassification/data/review/processed_data/labels_array.pkl'
 
         self.train_set = []
@@ -20,13 +21,14 @@ class Review(data.Dataset):
             self.labels = pickle.load(f)
 
         # 训练集则选取前80%，交叉验证选后20%
+        # （Tips: 数据转成Tensor的格式再进行输出，这样的数据使用DataLoader输出就很漂亮）
         if train is True:
-            self.train_set = self.train_set[:int(0.8*len(self.train_set))]
-            self.labels = self.labels[:int(0.8*len(self.labels))]
+            self.train_set = torch.LongTensor(self.train_set[:int(0.8*len(self.train_set))])
+            self.labels = torch.from_numpy(self.labels[:int(0.8*len(self.labels))])
 
         else:
-            self.train_set = self.train_set[int(0.8*len(self.train_set)):]
-            self.labels = self.labels[int(0.8*len(self.labels)):]
+            self.train_set = torch.LongTensor(self.train_set[int(0.8*len(self.train_set)):])
+            self.labels = torch.from_numpy(self.labels[int(0.8*len(self.labels)):])
 
     def __getitem__(self, index):
         return self.train_set[index], self.labels[index]

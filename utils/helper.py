@@ -25,7 +25,7 @@ class Helper(object):
                 if word in self.word2ind.keys():
                     temp.append(self.word2ind[word])
                 else:
-                    temp.append(self.word2ind['<OOV>'])
+                    temp.append(self.word2ind['<oov>'])
             out.append(temp)
 
         return out

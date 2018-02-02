@@ -3,7 +3,7 @@
 
 class Config(object):
     def __init__(self, word_embedding_dimension=100, word_num=20000,
-                 epoch=2, sentence_max_size=20,
+                 epoch=2, sentence_max_size=20, cuda=False,
                  label_num=2, learning_rate=0.01, batch_size=1):
         self.word_embedding_dimension = word_embedding_dimension     # 词向量的维度
         self.word_num = word_num
@@ -12,3 +12,4 @@ class Config(object):
         self.label_num = label_num                                   # 分类标签个数
         self.lr = learning_rate
         self.batch_size = batch_size
+        self.cuda = cuda

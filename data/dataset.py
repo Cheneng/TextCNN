@@ -8,8 +8,8 @@ class Review(data.Dataset):
 
     def __init__(self, train=True):
 
-        training_file = '/Users/cc/Model/SentenceClassification/data/review/processed_data/train_index_list.pkl'
-        labels_file = '/Users/cc/Model/SentenceClassification/data/review/processed_data/labels_array.pkl'
+        training_file = '/Users/cc/Model/FastText/data/review/processed_data/train_index_list.pkl'
+        labels_file = '/Users/cc/Model/FastText/data/review/processed_data/labels_array.pkl'
 
         self.train_set = []
         self.labels = np.array([])

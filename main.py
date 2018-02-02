@@ -8,22 +8,30 @@ import torch.utils.data as data
 from config import Config
 from models import TextCNN
 from data import Review
-from utils import Helper
 
-# 创建helper工具
-helper = Helper()
+torch.manual_seed(1)
+
+# 创建配置文件
 config = Config(sentence_max_size=50, batch_size=2,
-                word_num=len(helper.word2ind), label_num=7)
-training_set = Review()
-training_iter = data.DataLoader(dataset=training_set,
-                                batch_size=config.batch_size, num_workers=2)
+                word_num=11000, label_num=7)
 
-#print(training_set[0:2])
-data, labes = training_set[0]
-print(data)
+# 创建Dataset和DataLoader
+training_set = Review()
+
+if config.cuda:
+    training_iter = data.DataLoader(dataset=training_set,
+                                    batch_size=config.batch_size,
+                                    num_workers=2,
+                                    pin_memory=True)
+else:
+    training_iter = data.DataLoader(dataset=training_set,
+                                    batch_size=config.batch_size,
+                                    num_workers=2)
 
 # 创建模型
 model = TextCNN(config)
+if config.cuda:
+    model.cuda()
 
 # 设置多分类损失函数
 criterion = nn.MultiLabelSoftMarginLoss()
@@ -31,9 +39,31 @@ criterion = nn.MultiLabelSoftMarginLoss()
 # 设置优化器
 optimizer = optim.SGD(model.parameters(), lr=config.lr)
 
-loss = 0
+embeds = nn.Embedding(config.word_num, config.word_embedding_dimension)
+
+loss_sum = 0
+count = 0
 
 for data, label in training_iter:
-    print(data)
+
+    optimizer.zero_grad()
+    input_data = embeds(autograd.Variable(data))
+    #print(input_data)
+
+    input_data = input_data.unsqueeze(1)
+
+    out = model(input_data)
+    loss = criterion(out, autograd.Variable(label.float()))
+
+    loss_sum += loss
+    count += 1
+    if count >= 1000:
+        print("The loss is:", loss_sum/1000)
+        loss_sum = 0
+        count = 0
+
+    #loss.backward()
+    #optimizer.step()
+
 
 

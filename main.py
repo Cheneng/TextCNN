@@ -77,18 +77,18 @@ for epoch in range(config.epoch):
 
         compare = (label.byte() == pred)
         for i in compare:
-            all += 1
+            sample_num += 1
             if i.all():
                 right += 1
 
         loss_sum += loss
         count += 1
 
-        if count >= 1000:
+        if count >= 10:
             print("epoch", epoch, end='  ')
-            print("The loss is: ", (loss_sum/(count*config.batch_size)).data[0], end='  ')
+            print("The loss is: %.9f" % (loss_sum/(count*config.batch_size)).data[0], end='  ')
 
-            print("The accuracy is: ", right, '/', sample_num)
+            print("The accuracy is: ", right, '/', sample_num, right/sample_num)
 
             loss_sum = 0
             count = 0

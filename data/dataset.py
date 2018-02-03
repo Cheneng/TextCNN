@@ -2,14 +2,19 @@ from torch.utils import data
 import torch
 import numpy as np
 import pickle
+import sys
 
 
 class Review(data.Dataset):
 
     def __init__(self, train=True):
 
-        training_file = '/Users/cc/Model/TextCNN/data/review/processed_data/train_index_list.pkl'
-        labels_file = '/Users/cc/Model/TextCNN/data/review/processed_data/labels_array.pkl'
+        if sys.platform == 'darwin':
+            training_file = '/Users/cc/Model/TextCNN/data/review/processed_data/train_index_list.pkl'
+            labels_file = '/Users/cc/Model/TextCNN/data/review/processed_data/labels_array.pkl'
+        elif sys.platform == 'linux':
+            training_file = '/home/cc/Model/TextCNN/data/review/train_index_list.pkl'
+            labels_file = '/home/cc/Model/TextCNN/data/review/labels_array.pkl'
 
         self.train_set = []
         self.labels = np.array([])

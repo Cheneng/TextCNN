@@ -14,7 +14,7 @@ torch.manual_seed(1)
 
 # 创建配置文件
 config = Config(sentence_max_size=50,
-                batch_size=300,
+                batch_size=3,
                 word_num=11000,
                 label_num=7,
                 learning_rate=0.1)
@@ -71,29 +71,39 @@ for epoch in range(config.epoch):
         loss = criterion(out, autograd.Variable(label.float()))
 
         pred = (F.sigmoid(out).data-0.5 > 0)
-        compare = (out.data.byte() == pred)
-        #print(compare)
 
-
+        compare = (label.byte() == pred)
+        for i in compare:
+            all += 1
+            if i.all():
+                right += 1
 
         loss_sum += loss
         count += 1
+
         if count >= 1000:
-            print("The loss is: ", (loss_sum/(count*config.batch_size)).data[0])
+            print("epoch", epoch, end='  ')
+            print("The loss is: ", (loss_sum/(count*config.batch_size)).data[0], end='  ')
             loss_sum = 0
             count = 0
 
             """
             The accuracy. 
             """
+            # 比较一下标签相同的数目
+            """
+            compare = (label.byte() == pred)
+
             for i in compare:
                 all += 1
                 if i.all():
                     right += 1
+            """
+            print("The accuracy is: ", right, '/', all)
 
-            print("The accuracy is: ", all, '/', right)
             all = 0
             right = 0
+
 
         loss.backward()
         optimizer.step()

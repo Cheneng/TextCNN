@@ -80,11 +80,17 @@ for epoch in range(config.epoch):
         input_data = input_data.unsqueeze(1)
 
         out = model(input_data)
-        loss = criterion(out, autograd.Variable(label.float()))
+        if config.cuda:
+            loss = loss = criterion(out, autograd.Variable(label.float()).cuda())
+            pred = (F.sigmoid(out).data - 0.5 > 0)
 
-        pred = (F.sigmoid(out).data-0.5 > 0)
+            compare = (label.byte() == pred.cuda())
+        else:
+            loss = criterion(out, autograd.Variable(label.float()))
+            pred = (F.sigmoid(out).data - 0.5 > 0)
 
-        compare = (label.byte() == pred)
+            compare = (label.byte() == pred)
+
         for i in compare:
             sample_num += 1
             if i.all():

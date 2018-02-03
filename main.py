@@ -22,7 +22,8 @@ if torch.cuda.is_available():
                     word_num=11000,
                     label_num=7,
                     learning_rate=0.1,
-                    cuda=True)
+                    cuda=True,
+                    epoch=1000)
 
 else:
     config = Config(sentence_max_size=50,

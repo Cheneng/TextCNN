@@ -146,11 +146,11 @@ for epoch in range(config.epoch):
                 if config.cuda:
                     #loss = criterion(out, autograd.Variable(label.float()).cuda())
                     #pred = (F.sigmoid(out).data - 0.5 > 0)
-                    compare = (label.byte().cuda() == pred.cuda())
+                    compare = (voli_labels.byte().cuda() == pred.cuda())
                 else:
                     #loss = criterion(out, autograd.Variable(label.float()))
                     #pred = (F.sigmoid(out).data - 0.5 > 0)
-                    compare = (label.byte() == pred)
+                    compare = (voli_labels.byte() == pred)
 
                 for i in compare:
                     sample_num += 1

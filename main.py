@@ -133,12 +133,12 @@ for epoch in range(config.epoch):
             # Validation
             for voli_data, voli_labels in testing_iter:
 
-                voli_data = embeds(autograd.Variable(voli_data))
-                voli_data = voli_data.unsqueeze(1)
-
                 if config.cuda and torch.cuda.is_available():
                     voli_data = voli_data.cuda()
                     voli_labels = voli_labels.byte().cuda()
+
+                voli_data = embeds(autograd.Variable(voli_data))
+                voli_data = voli_data.unsqueeze(1)
 
                 out = model(voli_data)
                 pred = (F.sigmoid(out).data - 0.5 > 0)

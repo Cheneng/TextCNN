@@ -84,7 +84,7 @@ for epoch in range(config.epoch):
             loss = loss = criterion(out, autograd.Variable(label.float()).cuda())
             pred = (F.sigmoid(out).data - 0.5 > 0)
 
-            compare = (label.byte() == pred.cuda())
+            compare = (label.byte().cuda() == pred.cuda())
         else:
             loss = criterion(out, autograd.Variable(label.float()))
             pred = (F.sigmoid(out).data - 0.5 > 0)

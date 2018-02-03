@@ -16,11 +16,20 @@ if torch.cuda.is_available():
     torch.cuda.set_device(2)
 
 # 创建配置文件
-config = Config(sentence_max_size=50,
-                batch_size=3,
-                word_num=11000,
-                label_num=7,
-                learning_rate=0.1)
+if torch.cuda.is_available():
+    config = Config(sentence_max_size=50,
+                    batch_size=3000,
+                    word_num=11000,
+                    label_num=7,
+                    learning_rate=0.1,
+                    cuda=True)
+
+else:
+    config = Config(sentence_max_size=50,
+                    batch_size=3,
+                    word_num=11000,
+                    label_num=7,
+                    learning_rate=0.1)
 
 # 创建Dataset和DataLoader
 training_set = Review()

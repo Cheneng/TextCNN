@@ -12,6 +12,9 @@ from data import Review
 
 torch.manual_seed(1)
 
+if torch.cuda.is_available():
+    torch.cuda.set_device(2)
+
 # 创建配置文件
 config = Config(sentence_max_size=50,
                 batch_size=3,
@@ -50,9 +53,9 @@ optimizer = optim.SGD(model.parameters(), lr=config.lr)
 # loss_sum用来记录前n个损失相加的结果，count作为计数变量
 loss_sum = 0
 count = 0
-#accuracy = 0
+
 right = 0
-all = 0
+sample_num = 0
 
 # Train the model
 for epoch in range(config.epoch):
@@ -84,28 +87,15 @@ for epoch in range(config.epoch):
         if count >= 1000:
             print("epoch", epoch, end='  ')
             print("The loss is: ", (loss_sum/(count*config.batch_size)).data[0], end='  ')
+
+            print("The accuracy is: ", right, '/', sample_num)
+
             loss_sum = 0
             count = 0
-
-            """
-            The accuracy. 
-            """
-            # 比较一下标签相同的数目
-            """
-            compare = (label.byte() == pred)
-
-            for i in compare:
-                all += 1
-                if i.all():
-                    right += 1
-            """
-            print("The accuracy is: ", right, '/', all)
-
-            all = 0
+            sample_num = 0
             right = 0
-
 
         loss.backward()
         optimizer.step()
 
-torch.save(model.state_dict(), f='checkpoints/out1.model')
+        torch.save(model.state_dict(), f='checkpoints/out.model'+str(epoch))

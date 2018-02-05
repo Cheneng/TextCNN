@@ -88,7 +88,7 @@ right = 0
 sample_num = 0
 count_vali = 0
 loss_table = []
-loss_pkl = './data/loss.pkl'
+loss_pkl = './data/loss' + '_' + str(args.lr) + '_' + str(args.batch_size) + '.pkl'
 
 # Train the model
 for epoch in range(config.epoch):

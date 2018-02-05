@@ -107,12 +107,9 @@ for epoch in range(config.epoch):
 
         if config.cuda:
             loss = criterion(out, autograd.Variable(label.float()).cuda())
-#            pred = (F.sigmoid(out).data - 0.5 > 0)
-#            compare = (label.byte().cuda() == pred.cuda())
+
         else:
             loss = criterion(out, autograd.Variable(label.float()))
-#            pred = (F.sigmoid(out).data - 0.5 > 0)
-#            compare = (label.byte() == pred)
 
         loss_sum += loss
         count += 1
@@ -123,20 +120,14 @@ for epoch in range(config.epoch):
 
             print("epoch", epoch, end='  ')
             print("The loss is: %.9f" % (loss_sum/(count*config.batch_size)).data[0])
-            #print("The accuracy is: ", right, '/', sample_num, right/sample_num)
 
             loss_sum = 0
             count = 0
-            #sample_num = 0
-            #right = 0
 
         loss.backward()
         optimizer.step()
 
-        torch.save(model.state_dict(), f='checkpoints/out.model'+str(epoch))
 
-        with open(loss_pkl, 'wb') as f:
-            pickle.dump(loss_table, f)
 
         if count_vali >= 10:
             count_vali = 0
@@ -164,7 +155,12 @@ for epoch in range(config.epoch):
                     if i.all():
                         right += 1
 
+            torch.save(model.state_dict(),
+                       f='checkpoints/out' + '_' + str(args.lr) + '_' + str(args.batch_size) + '.ckpt')
+
             print(right, '/', sample_num)
             right = 0
             sample_num = 0
 
+with open(loss_pkl, 'wb') as f:
+    pickle.dump(loss_table, f)

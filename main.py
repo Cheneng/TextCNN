@@ -10,28 +10,39 @@ from config import Config
 from models import TextCNN
 from data import Review
 import pickle
+import argparse
 
 torch.manual_seed(1)
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--lr', type=float, default=0.1)
+parser.add_argument('--batch_size', type=int, default=3)
+parser.add_argument('--epoch', type=int, default=10)
+parser.add_argument('--gpu', type=int, default=0)
+parser.add_argument('--label_num', type=int, default=7)
+
+args = parser.parse_args()
+
 if torch.cuda.is_available():
-    torch.cuda.set_device(2)
+    torch.cuda.set_device(args.gpu)
 
 # 创建配置文件
 if torch.cuda.is_available():
     config = Config(sentence_max_size=50,
-                    batch_size=3000,
+                    batch_size=args.batch_size,
                     word_num=11000,
-                    label_num=7,
-                    learning_rate=0.1,
-                    cuda=True,
-                    epoch=1000)
+                    label_num=args.label_num,
+                    learning_rate=args.lr,
+                    cuda=args.gpu,
+                    epoch=args.epoch)
 
 else:
     config = Config(sentence_max_size=50,
-                    batch_size=3,
+                    batch_size=args.batch_size,
                     word_num=11000,
-                    label_num=7,
-                    learning_rate=0.1)
+                    label_num=args.label_num,
+                    learning_rate=args.lr)
 
 # 创建Dataset和DataLoader
 training_set = Review()
@@ -144,12 +155,8 @@ for epoch in range(config.epoch):
                 pred = (F.sigmoid(out).data - 0.5 > 0)
 
                 if config.cuda:
-                    #loss = criterion(out, autograd.Variable(label.float()).cuda())
-                    #pred = (F.sigmoid(out).data - 0.5 > 0)
                     compare = (voli_labels.byte().cuda() == pred.cuda())
                 else:
-                    #loss = criterion(out, autograd.Variable(label.float()))
-                    #pred = (F.sigmoid(out).data - 0.5 > 0)
                     compare = (voli_labels.byte() == pred)
 
                 for i in compare:

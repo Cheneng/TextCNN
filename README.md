@@ -1,3 +1,7 @@
-# TextCNN
+# Convolutional Neural Networks for Sentence Classification
 
-This is the implement of the TextCNN.
+> This repo implements the *Convolutional Neural Networks for Sentence Classification* (Yoon Kim) using PyTorch
+
+![model_archi](./pictures/model_archi.png)
+
+

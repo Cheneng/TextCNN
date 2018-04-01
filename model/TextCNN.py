@@ -3,14 +3,15 @@ import torch
 import torch.autograd as autograd
 import torch.nn as nn
 import torch.nn.functional as F
-from config import Config
+from .BasicModule import BasicModule
 
 
-class TextCNN(nn.Module):
+class TextCNN(BasicModule):
 
     def __init__(self, config):
         super(TextCNN, self).__init__()
         self.config = config
+        self.out_channel = config.out_channel
         self.conv3 = nn.Conv2d(1, 1, (3, config.word_embedding_dimension))
         self.conv4 = nn.Conv2d(1, 1, (4, config.word_embedding_dimension))
         self.conv5 = nn.Conv2d(1, 1, (5, config.word_embedding_dimension))
@@ -43,43 +44,4 @@ class TextCNN(nn.Module):
 
 
 if __name__ == '__main__':
-    print('\nTesting the model.py...')
-
-    torch.manual_seed(1)
-
-    config = Config(batch_size=2, sentence_max_size=7)
-    model = TextCNN(config)
-
-    # Fake data
-    embeds = nn.Embedding(200, 100)
-
-    criterion = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(params=model.parameters(), lr=0.1)
-
-
-    # Fake data
-    for epoch in range(10):
-
-        x_data = [[2, 3, 1, 4, 3, 1, 2], [3, 12, 45, 6, 67, 88, 55]]
-        y_data = [0, 0]
-        x = autograd.Variable(torch.LongTensor(x_data))
-        y = autograd.Variable(torch.LongTensor(y_data))
-
-        x = embeds(x)
-        x = x.unsqueeze(1)
-
-        out = model(x)
-        optimizer.zero_grad()
-
-        loss = criterion(out, y)
-        loss.backward()
-
-        out = F.softmax(out, dim=1)
-        out, ind = torch.max(out, dim=1)
-
-        print("loss is: ", loss.data[0])
-        print("The label is: [%d %d]" % (ind.data[0], ind.data[1]))
-        optimizer.step()
-
-
-
+    print('running the TextCNN...')

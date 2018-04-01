@@ -1,50 +1,16 @@
 from torch.utils import data
-import torch
-import numpy as np
-import pickle
-import sys
+import os
 
 
-class Review(data.Dataset):
+class TextDataset(data.Dataset):
 
-    def __init__(self, train=True):
-
-        if sys.platform == 'darwin':
-            training_file = '/Users/cc/Model/TextCNN/data/review/processed_data/train_index_list.pkl'
-            labels_file = '/Users/cc/Model/TextCNN/data/review/processed_data/labels_array.pkl'
-        elif sys.platform == 'linux':
-            training_file = '/home/cc/Model/TextCNN/data/review/train_index_list.pkl'
-            labels_file = '/home/cc/Model/TextCNN/data/review/labels_array.pkl'
-
-        self.train_set = []
-        self.labels = np.array([])
-
-        with open(training_file, 'rb') as f:
-            self.train_set = pickle.load(f)
-
-        with open(labels_file, 'rb') as f:
-            self.labels = pickle.load(f)
-
-        # 训练集则选取前80%，交叉验证选后20%
-        # （Tips: 数据转成Tensor的格式再进行输出，这样的数据使用DataLoader输出就很漂亮）
-        if train is True:
-            self.train_set = torch.LongTensor(self.train_set[:int(0.8*len(self.train_set))])
-            self.labels = torch.from_numpy(self.labels[:int(0.8*len(self.labels))])
-
-        else:
-            self.train_set = torch.LongTensor(self.train_set[int(0.8*len(self.train_set)):])
-            self.labels = torch.from_numpy(self.labels[int(0.8*len(self.labels)):])
+    def __init__(self, path):
+        self.file_name = os.listdir(path)
 
     def __getitem__(self, index):
         return self.train_set[index], self.labels[index]
 
     def __len__(self):
         return len(self.train_set)
-
-
-if __name__ == '__main__':
-    x = Review()
-    print(len(x))
-    print(x.labels.shape)
 
 

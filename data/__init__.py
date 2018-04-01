@@ -1,1 +1,1 @@
-from .dataset import Review
+from .dataset import TextDataset

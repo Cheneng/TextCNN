@@ -4,7 +4,8 @@
 
 ![model_archi](./pictures/model_archi.png)
 
-You should rewrite the Dataset class in the data/dataset.py and put your data in '/data/train' or any other directory. 
+You should rewrite the Dataset class in the data/dataset.py  
+and put your data in '/data/train' or any other directory.
 
 run by
 

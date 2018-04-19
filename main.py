@@ -57,7 +57,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=config.lr)
 
 count = 0
-loss_sum
+loss_sum = 0
 # Train the model
 for epoch in range(config.epoch):
     for data, label in training_iter:

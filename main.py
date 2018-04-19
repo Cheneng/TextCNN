@@ -74,7 +74,7 @@ for epoch in range(config.epoch):
 
         if count % 100 == 0:
             print("epoch", epoch, end='  ')
-            print("The loss is: %.5f" % (loss_sum/100)
+            print("The loss is: %.5f" % (loss_sum/100)）
 
             loss_sum = 0
             count = 0
